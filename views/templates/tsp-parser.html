@@ -1,0 +1,7 @@
+<div class="tsp-parser" ng-controller="TSPParserController as tspParserCtrl">
+  <h3>Parser:</h3>
+  <form name="tspParserForm" ng-submit="tspParserForm.$valid && tspParserCtrl.parse()" novalidate="novalidate">
+    <input type="file" name="tspLibFile" file-model="tsplibFile" required />
+    <input type="submit" value="Upload" />
+  </form>
+</div>

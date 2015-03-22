@@ -1,0 +1,22 @@
+<div class="tsp-generator" ng-controller="TSPGeneratorController as tspGenCtrl">
+    <h3>Generator:</h3>
+
+    <form name="tspGeneratorForm" ng-submit="tspGeneratorForm.$valid && tspGenCtrl.generate()" novalidate="novalidate">
+        <fieldset>
+            <label>Number of items:
+                <input type="number" required min="1" name="number_of_items"
+                       ng-model="tspGenCtrl.tsp_model.number_of_items" max="10000"/>
+            </label>
+            <label>Random min:
+                <input type="number" name="random_min" min="1" max="10000" ng-model="tspGenCtrl.generator.min"/>
+            </label>
+            <label>Random max:
+                <input type="number" name="random_max" min="1" max="10000" ng-model="tspGenCtrl.generator.max"/>
+            </label>
+            <label>Symmetric:
+                <input type="checkbox" name="is_symmetric" ng-model="tspGenCtrl.generator.symmetric"/>
+            </label>
+            <input type="submit" value="Generate"/>
+        </fieldset>
+    </form>
+</div>

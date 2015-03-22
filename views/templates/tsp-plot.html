@@ -1,0 +1,23 @@
+<div class="tsp-plot" ng-controller="TSPPlotController as TSPPlotCtrl">
+    <h3>Plot</h3>
+
+    <div class="tsp-plot-container"></div>
+    <div class="info" ng-show="TSPPlotCtrl.number_of_solutions">Number of possible solutions:
+        {{TSPPlotCtrl.number_of_solutions}}
+    </div>
+    <div class="controls">
+        <label>Auto parse:
+            <input type="checkbox" ng-model="TSPPlotCtrl.auto_parse"/>
+        </label>
+        <label>Mode:
+            <select ng-model="TSPPlotCtrl.click_mode" ng-options="click_mode.name for click_mode in TSPPlotCtrl.click_modes"></select>
+        </label>
+    </div>
+    <div class="buttons">
+        <input type="button" ng-click="TSPPlotCtrl.plotToMatrix()" value="Plot to Matrix"
+               ng-disabled="TSPPlotCtrl.auto_parse"/>
+        <input type="button" ng-click="TSPPlotCtrl.visualize()" value="Visualize"
+               ng-disabled="!TSPPlotCtrl.tsp_model.matrix[0]"/>
+        <input type="button" ng-click="TSPPlotCtrl.clear()" value="Clear"/>
+    </div>
+</div>

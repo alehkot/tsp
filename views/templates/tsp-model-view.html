@@ -1,0 +1,13 @@
+<div class="tsp-model-view" ng-controller="TSPModelViewController as tspModelViewCtrl">
+  <h3>Matrix view:</h3>
+  <div class="controls">
+    <label>Render:
+      <input type="checkbox" ng-model="tspModelViewCtrl.tsp_model.render" />
+    </label>
+  </div>
+  <table class="tsp-model-view" ng-show="tspModelViewCtrl.tsp_model.render == true">
+    <tr ng-repeat="row in tspModelViewCtrl.tsp_model.matrix track by $index">
+      <td ng-repeat="col in row track by $index">{{ col }}</td>
+    </tr>
+  </table>
+</div>

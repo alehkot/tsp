@@ -1,0 +1,22 @@
+{
+  "name": "server",
+  "description": "TSP Server",
+  "version": "0.0.1",
+  "private": true,
+  "dependencies": {
+    "body-parser": "^1.0.2",
+    "error-handler": "^0.1.4",
+    "express": "~4.1.1",
+    "jade": "~0.31.2",
+    "method-override": "^1.0.0",
+    "morgan": "^1.0.0",
+    "mathjs": "^0.25.0",
+    "underscore": "^1.6.0",
+    "busboy": "0.2.8",
+    "connect-busboy": "0.0.1",
+    "shelljs": "0.3.0",
+    "temp": "0.8.1",
+    "exec-sync": "0.1.6",
+    "numeric": "1.2.6"
+  }
+}
