@@ -113,7 +113,7 @@
                 }).then(function (result) {
 
                 });
-            }
+            };
 
             /*
              * Executes POST request to the server to find the optimal route.
@@ -258,6 +258,29 @@
                 this.number_of_items = 0;
                 this.tsp_model.reset();
                 this.number_of_solutions = 0;
+            };
+
+            /**
+             * Saves the current model to browser's local storage.
+             */
+            this.saveToStorage = function () {
+                window.localStorage.setItem('tsp_model', JSON.stringify(this.tsp_model));
+                window.localStorage.setItem('circles_dataset', JSON.stringify(this.circles_dataset));
+            };
+
+            /**
+             * Retrieves model from browser's local storage.
+             */
+            this.loadFromStorage = function () {
+                this.clear();
+                var tsp_model = JSON.parse(window.localStorage.getItem('tsp_model'));
+                this.tsp_model.coordinates = tsp_model.coordinates;
+                this.tsp_model.matrix = tsp_model.matrix;
+                this.number_of_items = tsp_model.number_of_items;
+                this.number_of_solutions = tsp_model.number_of_solutions;
+                this.circles_dataset = JSON.parse(window.localStorage.getItem('circles_dataset'));
+                this.drawCircles();
+                //this.plotToMatrix();
             };
 
             /*
@@ -423,7 +446,7 @@
                     this.plotToMatrix();
                 }
 
-            }
+            };
 
             this.initSVGPlot = function () {
                 var mouse,
@@ -435,7 +458,7 @@
                     })
                 };
 
-                svgContainer = d3.select(".tsp-plot .tsp-plot-container").append("svg")
+                var svgContainer = d3.select(".tsp-plot .tsp-plot-container").append("svg")
                     .attr("width", 600)
                     .attr("height", 300).on('click', function () {
                         if (that.isClickModeInsert()) {
@@ -447,6 +470,7 @@
                                 "color": "purple",
                                 "id": that.number_of_items
                             });
+
                             that.tsp_model.coordinates.push([mouse[0], mouse[1]]);
                             that.number_of_items++;
 
@@ -528,6 +552,8 @@
                 return this.click_mode.name == 'remove';
             };
             var that = this;
+
+            // React on new solution.
             $scope.$on('solution:updated', function () {
                 if (that.number_of_items == 0) {
                     return;
