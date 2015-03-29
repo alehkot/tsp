@@ -16,7 +16,7 @@
     "exec-sync": "^0.1.6",
     "express": "^4.1.2",
     "express-session": "^1.10.4",
-    "jade": "~0.31.2",
+    "jade": "^0.31.2",
     "limit": "0.0.1",
     "mathjs": "^0.25.0",
     "method-override": "^1.0.2",
