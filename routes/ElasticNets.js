@@ -11,6 +11,7 @@ function ElasticNets(coordinates, method_params, model, req) {
     var TSPResult = require('./TSPResult');
     var ElasticNetsPrinter = require('./ElasticNetsPrinter');
     var TSPCommon = require('./TSPCommon');
+
     // @todo Remove.
     this.req = req;
     this.model = model;
@@ -142,7 +143,7 @@ ElasticNets.prototype.updateNeurons = function(diff, weights) {
  */
 ElasticNets.prototype.calculate = function() {
     // Print the first page.
-    this.printer.addPage(this.neurons, this.k, 0);
+    //this.printer.addPage(this.neurons, this.k, 0);
 
     var weightening_result, weights, worst_dist, diff;
 
@@ -159,7 +160,7 @@ ElasticNets.prototype.calculate = function() {
 
             // Print each iteration state.
             //_output_image(ctx, coordinates, neurons, norm_coordinates_data, k, iteration);
-            this.printer.addPage(this.neurons, this.k, this.iteration);
+            //this.printer.addPage(this.neurons, this.k, this.iteration);
         }
 
         weightening_result = this.weightenNeurons();
@@ -167,7 +168,11 @@ ElasticNets.prototype.calculate = function() {
         worst_dist = weightening_result.worst_dist;
         diff = weightening_result.diff;
 
-        if (worst_dist < this.method_params.epsilon || this.iteration >= this.method_params.num_iterations_max) {
+        //if (worst_dist < this.method_params.epsilon || this.iteration >= this.method_params.num_iterations_max) {
+        //    break;
+        //}
+
+        if (this.iteration >= this.method_params.num_iterations_max) {
             break;
         }
 
@@ -218,7 +223,7 @@ ElasticNets.prototype.buildSolution = function() {
 
     // Output pdf file.
     // @todo Use aspects.
-    this.printer.printPages();
+    //this.printer.printPages();
 
     // Save neurons position.
     if (!this.method_params.reoptimize) {

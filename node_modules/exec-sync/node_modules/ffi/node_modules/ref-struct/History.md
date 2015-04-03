@@ -1,15 +1,23 @@
 
+1.0.1 / 2015-03-24
+==================
+
+  * removed travis testing for node_js version "0.6" and added 0.12 and iojs
+  * added appveyor test versions as per node-ffi library for iojs & 0.12
+  * package: allow any "ref" v "1"
+  * npmignore: add `test` dir
+
 1.0.0 / 2014-11-03
 ==================
 
- * bumping to v1.0.0 for better-defined semver semantics
+  * bumping to v1.0.0 for better-defined semver semantics
 
 0.0.7 / 2014-11-03
 ==================
 
- * gitignore: ignore single letter ?.js test files
- * lib: only slice buffer in set() in the non-instance case
- * package: allow any "debug" v2
+  * gitignore: ignore single letter ?.js test files
+  * lib: only slice buffer in set() in the non-instance case
+  * package: allow any "debug" v2
 
 0.0.6 / 2014-06-19
 ==================
