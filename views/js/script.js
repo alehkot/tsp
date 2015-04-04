@@ -163,11 +163,12 @@
 
             this.changeMethod = function () {
                 switch (this.method.name) {
+                    // @todo Get rid of this logic. Why can't we just use method_params directly?
                     case 'concorde':
                         this.method_params = this.concorde_params;
                         break;
                     case 'monte-carlo':
-                        this.method_params = {};
+                        this.method_params = this.monte_carlo_params;
                         break;
                     case 'greedy':
                         this.method_params = {};
@@ -189,7 +190,9 @@
             }, {
                 name: "elastic-nets"
             }];
-            this.method = this.methods[0];
+
+            // @todo Move to methods vocabulary.
+
             this.concorde_params = {
                 name: 'Default name',
                 description: 'Default description'
@@ -207,8 +210,17 @@
                 num_iter_max: 100
             };
 
+            this.monte_carlo_params = {
+                num_iterations: 1000
+            };
+
             $scope.tsp_solution = TSPSolution;
+
+            // Initialize the defaults.
             this.method_params = {};
+            this.method = this.methods[0];
+            // Make sure the default method is initialized.
+            this.changeMethod();
         }
     ]);
 

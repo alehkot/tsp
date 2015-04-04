@@ -9,8 +9,8 @@
         <div ng-show="tspSolverCtrl.isMonteCarlo()">
             <h3>Monte-Carlo</h3>
             <label>Number of iterations:
-                <input type="number" name="num_iterations" min="1" max="1000000"
-                       ng-model="tspSolverCtrl.num_iterations"/>
+                <input type="number" min="1" max="1000000"
+                       ng-model="tspSolverCtrl.monte_carlo_params.num_iterations"/>
             </label>
         </div>
         <div ng-show="tspSolverCtrl.isConcorde()">
@@ -51,9 +51,6 @@
             </label>
             <label for="">Num iter max:
                 <input name="x" step="1" ng-model="tspSolverCtrl.elastic_nets_params.num_iter_max" type="number"/>
-            </label>
-            <label for="">Reoptimize:
-                <input name="reoptimize" ng-model="tspSolverCtrl.elastic_nets_params.reoptimize" type="checkbox"/>
             </label>
             <label for="">Reoptimize:
                 <input name="reoptimize" ng-model="tspSolverCtrl.elastic_nets_params.reoptimize" type="checkbox"/>
