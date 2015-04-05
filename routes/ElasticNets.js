@@ -213,13 +213,13 @@ ElasticNets.prototype.buildSolution = function() {
 
     var visited = _.pluck(pairs, 0);
 
-    // Make the loop.
-    visited.push(visited[0]);
-
-    console.log(TSPCommon._calculate_route_length(visited, this.model));
+    // Two Opt post-optimization.
     var TwoOpt = require('./TwoOpt');
     var two_opt = new TwoOpt(this.model, visited);
     console.log(TSPCommon._calculate_route_length(two_opt.process(), this.model));
+
+    // Make the loop.
+    visited.push(visited[0]);
 
     this.result.setMinRoute(visited);
 
@@ -268,6 +268,7 @@ ElasticNets.prototype.getRealDistances = function() {
  * @returns {*}
  */
 ElasticNets.prototype.getNeurons = function() {
+    console.log(this.req.session);
     if (this.method_params.reoptimize && this.req.session && this.req.session.neurons) {
         var TSPCommon = require('./TSPCommon');
         console.log('Reoptimizing...');

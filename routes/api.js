@@ -171,7 +171,7 @@ exports.calculate = function (req, res) {
 
     var start_time = new Date().getTime();
     var result = {};
-    
+
     switch (method) {
         case 'monte-carlo':
             var MonteCarlo = require('./MonteCarlo');
@@ -194,6 +194,7 @@ exports.calculate = function (req, res) {
         algorithm.calculate();
         result = algorithm.buildSolution();
     }
+
     var end_time = new Date().getTime();
     console.log("Time elapsed: " + (end_time - start_time)/1000);
     res.json(result);
