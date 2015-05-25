@@ -7,7 +7,8 @@ function ElasticNetsPrinter(k, coordinates, norm_coordinates_data) {
     var Canvas, Image, canvas, ctx, _;
     Canvas = require('canvas');
     Image = Canvas.Image;
-    canvas = new Canvas(600, 300, 'pdf');
+    ///canvas = new Canvas(600, 300, 'pdf');
+    canvas = new Canvas(500, 500, 'pdf');
     ctx = canvas.getContext('2d');
     this.canvas = canvas;
     this._ = require('underscore');
@@ -44,7 +45,7 @@ ElasticNetsPrinter.prototype.addPage = function(neurons, k, iteration) {
     ctx.fillText("k: " + k, 10, 50);
     ctx.stroke();
 
-    this._.each(this.coordinates, function(value) {
+    this._.each(this.coordinates, function(value, i) {
         var radius = 2;
         ctx.beginPath();
         ctx.arc(value[0], value[1], radius, 0, 2 * Math.PI, false);
@@ -53,9 +54,10 @@ ElasticNetsPrinter.prototype.addPage = function(neurons, k, iteration) {
         ctx.lineWidth = 5;
         ctx.strokeStyle = '#003300';
         ctx.stroke();
+        ctx.fillText(i + 1, value[0], value[1]);
     });
 
-    this._.each(neurons, function(neuron) {
+    this._.each(neurons, function(neuron, i) {
         var radius = 1;
         ctx.beginPath();
         ctx.arc(
@@ -70,6 +72,7 @@ ElasticNetsPrinter.prototype.addPage = function(neurons, k, iteration) {
         ctx.lineWidth = 2;
         ctx.strokeStyle = 'red';
         ctx.stroke();
+        ctx.fillText(i + 1, neuron[0] * that.norm_coordinates_width_interval + that.norm_coordinates_data['min_width'], neuron[1] * that.norm_coordinates_height_interval + that.norm_coordinates_data['min_height']);
     });
     ctx.addPage();
 };

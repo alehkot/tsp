@@ -37,8 +37,6 @@ app.use(bodyParser({
 
 app.use(busboy());
 
-console.log(path.join(__dirname, '/files'));
-
 app.use(function (err, req, res, next) {
     console.error(err.stack);
     res.send(500, 'Something broke!');
@@ -53,10 +51,6 @@ app.all('*', function (req, res, next) {
 });
 
 app.use(express.static(__dirname + '/views'));
-
-app.get('/', function (req, res) {
-    res.sendFile('/index.html');
-});
 
 app.get('/api/generate', api.generate);
 app.post('/api/calculate', api.calculate);

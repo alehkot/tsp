@@ -175,6 +175,11 @@
                         break;
                     case 'elastic-nets':
                         this.method_params = this.elastic_nets_params;
+                        break;
+                    case 'elastic-nets-marriage':
+                        this.method_params = {};
+                        break;
+
                 }
             };
 
@@ -189,7 +194,10 @@
                 name: "greedy"
             }, {
                 name: "elastic-nets"
-            }];
+            }, {
+                name: "elastic-nets-marriage"
+               }
+            ];
 
             // @todo Move to methods vocabulary.
 

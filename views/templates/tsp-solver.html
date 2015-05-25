@@ -22,6 +22,9 @@
                 <input type="text" name="concorde_description" ng-model="tspSolverCtrl.concorde_params.description"/>
             </label>
         </div>
+        <div ng-show="tspSolverCtrl.isElasticNetsMarriage()">
+            <h3>Elastic Nets Marriage</h3>
+        </div>
         <div ng-show="tspSolverCtrl.isElasticNets()">
             <h3>Elastic Nets</h3>
             <label for="">Alpha:

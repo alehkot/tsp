@@ -26,8 +26,16 @@ function ElasticNets(coordinates, method_params, model, req) {
     this.norm_coordinates_data = this.normalizeCoordinates();
     this.norm_coordinates = this.norm_coordinates_data['norm_coordinates'];
     this.centroid = this.generateCentroid();
-    this.num_neurons = this.getNumNeurons();
-    this.neurons = this.getNeurons();
+
+    if (this.method_params.reoptimize && this.req.session && this.req.session.neurons) {
+        var TSPCommon = require('./TSPCommon');
+        console.log('Reoptimizing...');
+        this.neurons = TSPCommon._add_distortion(this.req.session.neurons);
+        this.num_neurons = this.neurons.length;
+    } else {
+        this.num_neurons = this.getNumNeurons();
+        this.neurons = this.getNeurons();
+    }
     this.real_distances = this.getRealDistances();
     this.printer = new ElasticNetsPrinter(this.k, coordinates, this.norm_coordinates_data);
     this.iteration = 0;
@@ -169,9 +177,9 @@ ElasticNets.prototype.calculate = function() {
         worst_dist = weightening_result.worst_dist;
         diff = weightening_result.diff;
 
-        //if (worst_dist < this.method_params.epsilon || this.iteration >= this.method_params.num_iterations_max) {
-        //    break;
-        //}
+        if (worst_dist < this.method_params.epsilon || this.iteration >= this.method_params.num_iterations_max) {
+            break;
+        }
 
         if (this.iteration >= this.method_params.num_iterations_max) {
             break;
@@ -268,13 +276,6 @@ ElasticNets.prototype.getRealDistances = function() {
  * @returns {*}
  */
 ElasticNets.prototype.getNeurons = function() {
-    console.log(this.req.session);
-    if (this.method_params.reoptimize && this.req.session && this.req.session.neurons) {
-        var TSPCommon = require('./TSPCommon');
-        console.log('Reoptimizing...');
-        var neurons = TSPCommon._add_distortion(this.req.session.neurons);
-        return neurons;
-    }
     var numeric = require('numeric'),
         _ = require('underscore');
 

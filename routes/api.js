@@ -7,6 +7,9 @@
  * @param res
  */
 exports.generate = function (req, res) {
+    var generator = new (require('./TSPGenerator'))('euc_2d', req.query);
+    generator.generate(req.query);
+    return generator.toArray();
     var math = require('mathjs');
     var min = req.query.min ? Math.abs(parseInt(req.query.min)) : 1,
         max = req.query.max ? Math.abs(parseInt(req.query.max)) : 100,
@@ -189,6 +192,11 @@ exports.calculate = function (req, res) {
             var ElasticNets = require('./ElasticNets');
             var algorithm = new ElasticNets(coordinates, method_params, model, req);
             break;
+        case 'elastic-nets-marriage':
+            var ElasticNetsMarriage = require('./ElasticNetsMarriage');
+            var algorithm = new ElasticNetsMarriage();
+            break;
+
     }
     if (algorithm) {
         algorithm.calculate();
