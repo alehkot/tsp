@@ -18,6 +18,7 @@ ElasticPowerDistance.prototype.weightenNeurons = function(diff) {
     if (k < 0.01) {
         k = 0.01;
     }
+
     var weights = numeric.exp(numeric.div(numeric.neg(dist), (2 * Math.pow(k, 2))));
 
     var grouped_neurons = TSPCommon._grouper(weights, this.model.num_neurons);

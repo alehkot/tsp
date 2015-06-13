@@ -15,7 +15,7 @@ function ElasticNetsMarriage() {
         alpha: 1,
         beta: 0.5,
         //num_neurons_factor: 2.5,
-        k: 0.2,
+        k: 1.0,
         epsilon: 0.02,
         k_num_iter: 25,
         k_alpha: 0.99,
@@ -41,7 +41,7 @@ function ElasticNetsMarriage() {
     this.num_neurons = this.getNumNeurons();
     this.neurons = this.getNeurons();
 
-    this.real_distances = this.getRealDistances();
+    //this.real_distances = this.getRealDistances();
     this.printer = new ElasticNetsPrinter(this.k, this.coordinates, this.norm_coordinates_data);
     this.iteration = 0;
 }
@@ -73,6 +73,8 @@ ElasticNetsMarriage.prototype.generateModel = function() {
         //theta.push(linspace_max * i / this.num_items + 0.001 * _.random(1, 500));
         theta.push(linspace_max * i / this.num_items);
     }
+
+    //theta = _.shuffle(theta);
 
     var xpos = numeric.mul(this.items_radius, numeric.cos(theta));
     var ypos = numeric.mul(this.items_radius, numeric.sin(theta));
@@ -117,27 +119,57 @@ ElasticNetsMarriage.prototype.calculate = function() {
     var ElasticPowerPriorities = require('./ElasticPowerPrioritiesTwo');
     var ElasticPowerPrioritiesRev = require('./ElasticPowerPrioritiesRev');
     var ElasticPowerDistance = require('./ElasticPowerDistance');
+    var ElasticPowerPriorities31 = require('./ElasticPowerPrioritiesThreeOne');
+    var ElasticPowerPriorities32 = require('./ElasticPowerPrioritiesThreeTwo');
+    var ElasticPowerPrioritiesFour = require('./ElasticPowerPrioritiesFour');
+
+    //var delta_artificial = [];
+    //for (var i = 0; i < this.num_items; i++){
+    //    delta_artificial.push([_.random(1, 40) / 100, _.random(1, 40) / 100]);
+    //}
+    //this.moveNeuronsBy(delta_artificial);
 
     // Print the first page.
     this.printer.addPage(this.neurons, this.k, 0);
 
     var weightening_result, weights, worst_dist, diff;
 
+    var priority1 = [
+        0.33333333333333, 0.066666666666667, 0.26666666666667, 0.13333333333333, 0.2,
+        0.26666666666667, 0.066666666666667, 0.2, 0.349, 0.13333333333333,
+        0.13333333333333, 0.2, 0.33333333333333, 0.26666666666667, 0.066666666666667,
+        0.069999993, 0.26666666666667, 0.13333333333333, 0.33333333333333, 0.2,
+        0.2, 0.26666666666667, 0.066666666666667, 0.13333333333333, 0.33333333333333
+    ];
+
+    var priority2 = [
+        0.13333333333333, 0.33333333333333, 0.066666666666667, 0.28, 0.2,
+        0.26666666666667, 0.2, 0.066666666666667, 0.13333333333333, 0.33333333333333,
+        0.33333333333333, 0.066666666666667, 0.13333333333333, 0.2, 0.26666666666667,
+        0.13333333333333, 0.28, 0.066666666666667, 0.2, 0.33333333333333,
+        0.066666666666667, 0.13333333333333, 0.33333333333333, 0.26666666666667, 0.2
+    ];
+
     var power1 = new ElasticPowerPriorities(this);
-    power1.setPriorities([
-        0.2, 1.0, 0.6, 0.8, 0.4,
-        1.0, 0.4, 0.6, 0.8, 0.2,
-        0.2, 0.4, 0.6, 0.8, 1.0,
-        0.4, 0.2, 0.8, 0.6, 1.0,
-        0.4, 0.6, 0.2, 1.0, 0.8
-    ]);
-    power1.setPrioritiesRev([
-        0.2, 0.4, 0.6, 0.8, 1.0,
-        0.4, 0.6, 0.2, 0.8, 1.0,
-        0.6, 0.2, 1.0, 0.4, 0.8,
-        0.8, 0.4, 1.0, 0.6, 0.2,
-        0.4, 0.8, 0.6, 1.0, 0.2
-    ]);
+    power1.setPriorities(priority1);
+
+    power1.setPrioritiesRev(priority2);
+
+    var power4 = new ElasticPowerPriorities31(this);
+    power4.setPriorities(priority1);
+
+    power4.setPrioritiesRev(priority2);
+
+    var power5 = new ElasticPowerPriorities32(this);
+    power5.setPriorities(priority1);
+
+    power5.setPrioritiesRev(priority2);
+
+    var power6 = new ElasticPowerPrioritiesFour(this);
+    power6.setPriorities(priority1);
+
+    power6.setPrioritiesRev(priority2);
+
     //power1.setPriorities([
     //    0.2, 0.4, 0.6, 0.8, 1.0,
     //    0.2, 0.6, 0.4, 1.0, 0.8,
@@ -171,10 +203,12 @@ ElasticNetsMarriage.prototype.calculate = function() {
         if (this.iteration % this.method_params.k_num_iter == 0) {
             //method_params.k_num_iter = _.random(1, 50);
             this.k *= this.method_params.k_alpha;
+            //if (this.k < 0.0281) {
+            //    this.k = 0.0281;
+            //}
             if (this.k < 0.01) {
                 this.k = 0.01;
             }
-
             // Print each iteration state.
             //_output_image(ctx, coordinates, neurons, norm_coordinates_data, k, iteration);
             this.printer.addPage(this.neurons, this.k, this.iteration);
@@ -189,11 +223,37 @@ ElasticNetsMarriage.prototype.calculate = function() {
         //var delta2 = power2.getNeuronsDelta(diff, 0.003*Math.exp(-0.2 / (2 * Math.pow(1-this.k, 2))));
         //var delta1 = power1.getNeuronsDelta(diff, 0.4 * this.k);
         //var delta3 = power3.getNeuronsDelta(diff, 0.01 + 0.01*Math.exp(-0.2 / (2 * Math.pow(1 - this.k, 2))));
-        var delta2 = power2.getNeuronsDelta(diff, this.k);
+        //var delta2 = power2.getNeuronsDelta(diff, this.k);
+        //this.k = 0.02;
+        //var delta4 = power4.getNeuronsDelta(diff, 0.00002);
 
-        var delta1 = power1.getNeuronsDelta(diff, 0.2 * this.k);
-        var delta3 = power3.getNeuronsDelta(diff, 0.2);
+        //var u = 0.009 / this.k;
+        //if (u > 0.4) {
+        //    u = 0.4;
+        //}
+        //var delta3 = power3.getNeuronsDelta(diff, u);
 
+
+        // Three one
+        //var delta1 = power1.getNeuronsDelta(diff, 0.08);
+        //var delta3 = power3.getNeuronsDelta(diff, 0.2);
+
+        var delta4 = power4.getNeuronsDelta(diff, 0.2);
+        var delta5 = power5.getNeuronsDelta(diff, 0.2);
+        //var total_delta_x = numeric.sum(_.pluck(delta4, 0)) + numeric.sum(_.pluck(delta5, 0));
+        //var total_delta_y = numeric.sum(_.pluck(delta4, 1)) + numeric.sum(_.pluck(delta5, 1));
+        //if (total_delta_x < 0.00001 && total_delta_y < 0.00001) {
+        //    this.k *= this.method_params.k_alpha;
+        //}
+
+        //var delta6 = power6.getNeuronsDelta(diff, 2);
+
+        if (this.k < 0.16) {
+            //var old_k = this.k;
+            //this.k = 0.2;
+            //delta3 = power3.getNeuronsDelta(diff, 0.02);
+            //this.k = old_k;
+        }
         if (this.k > 0.18) {
             //var delta1 = power1.getNeuronsDelta(diff, this.k);
             //this.moveNeuronsBy(delta1);
@@ -204,14 +264,81 @@ ElasticNetsMarriage.prototype.calculate = function() {
             //this.k = old_k;
             //this.moveNeuronsBy(delta3);
         }
-        this.moveNeuronsBy(delta3);
-        this.moveNeuronsBy(delta1);
-
-
         //this.moveNeuronsBy(delta3);
+        //this.moveNeuronsBy(delta1);
+        //this.moveNeuronsBy(delta6);
+        this.moveNeuronsBy(delta4);
+        this.moveNeuronsBy(delta5);
 
         //this.moveNeuronsBy(delta2);
     }
+
+    var distances = this.getRealDistances();
+    var result = [];
+    _.each(distances, function(value_1, i){
+        var min_distance = 99999;
+        var min_j = -1;
+        _.each(value_1, function(value_2, j){
+            if (value_2 < min_distance) {
+                min_distance = value_2;
+                min_j = j;
+            }
+        });
+        result.push([min_j + 1, i + 1]);
+    });
+
+    var TSPCommon = require('./TSPCommon');
+    var priority1_grouped = TSPCommon._grouper(priority1, this.num_items);
+    var priority2_grouped = TSPCommon._grouper(priority2, this.num_items);
+
+    console.log(result);
+
+    _.each(result, function(pair){
+        console.log('looking: ', pair);
+        var i = pair[0] - 1;
+        var j = pair[1] - 1;
+        var ij_weight = priority1_grouped[i][j];
+        var ji_weight = priority2_grouped[j][i];
+        _.each(priority1_grouped[i], function(i_val, i_pos){
+            if (i_val > ij_weight) {
+                console.log(i + 1, 'wants', i_pos + 1, 'more');
+
+                var i_pos_j = _.find(result, function(result_data){
+                    return (result_data[1] - 1) == i_pos;
+                });
+                console.log('found pair:', i_pos_j);
+
+                // tekuchasya para vtorogo chuvoka
+                var el_current_pair = priority2_grouped[i_pos_j[1] - 1][i_pos_j[0] - 1];
+                console.log('current weight of this pair', el_current_pair);
+                console.log('weight of alternative pair', priority2_grouped[i_pos_j[1] - 1][i]);
+
+                if (el_current_pair < priority2_grouped[i_pos_j[1] - 1][i]) {
+                    console.log('fail');
+                }
+            }
+        });
+    });
+
+    //var assigned = [], pairs = [];
+    //// Foreach item.
+    //for (var i = 0; i < this.norm_coordinates.length; i++) {
+    //    var min_distance = 99999;
+    //    var j_min_distance = -1;
+    //    for (var j = 0; j < this.neurons.length; j++) {
+    //        var distance = TSPCommon._get_distance(this.norm_coordinates[i], this.neurons[j])
+    //        if (distance < min_distance && !_.contains(assigned, j)) {
+    //            j_min_distance = j;
+    //            min_distance = distance;
+    //        }
+    //    }
+    //    assigned.push(j_min_distance);
+    //    pairs.push([i, j_min_distance]);
+    //}
+    //
+    //pairs = _.sortBy(pairs, function (pair) {
+    //    return pair[1];
+    //});
 };
 
 /**
@@ -244,7 +371,7 @@ ElasticNetsMarriage.prototype.buildSolution = function() {
 };
 
 /**
- * Returns real distances between items.
+ * Returns real distances between neurons and items.
  *
  * @returns {*}
  */
@@ -252,13 +379,12 @@ ElasticNetsMarriage.prototype.getRealDistances = function() {
     var numeric = require('numeric'),
         _ = require('underscore'),
         TSPCommon = require('./TSPCommon');
-    var coordinates = this.coordinates;
+    var coordinates = this.norm_coordinates;
+    var neurons = this.neurons;
     var distances = numeric.rep([coordinates.length, coordinates.length], 0);
     _.each(coordinates, function (value_i, i) {
-        _.each(coordinates, function (value_j, j) {
-            if (i != j) {
-                distances[i][j] = TSPCommon._get_distance(value_i, value_j);
-            }
+        _.each(neurons, function (value_j, j) {
+            distances[i][j] = TSPCommon._get_distance(value_i, value_j);
         });
     });
     return distances;
@@ -273,10 +399,11 @@ ElasticNetsMarriage.prototype.getRealDistances = function() {
 ElasticNetsMarriage.prototype.getNeurons = function() {
     var numeric = require('numeric'),
         _ = require('underscore');
-    //var items = _.map(this.norm_coordinates, function(value){
-    //   return [value[0] - 0.7, value[1]];
-    //});
-    //return items;
+    var that = this;
+    var items = _.map(this.norm_coordinates, function(value){
+       return [that.centroid[0], that.centroid[1]];
+    });
+    return items;
 
     var theta = [];
     var linspace_max = 2 * Math.PI;
