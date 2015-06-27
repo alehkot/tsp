@@ -28,6 +28,21 @@ exports._get_distance = function(value_i, value_j) {
 };
 
 /**
+ * Deep copy arrays. Going one level deep seems to be enough.
+ *
+ * @param arr
+ * @returns {Array}
+ * @private
+ */
+exports._clone_array = function(arr) {
+    var clone = [];
+    for (i=0; i < arr.length; i++) {
+        clone.push( arr[i].slice(0) )
+    }
+    return clone;
+};
+
+/**
  * Groups array elements by k.
  *
  * @param array

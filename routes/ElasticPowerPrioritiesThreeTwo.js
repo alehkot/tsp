@@ -9,9 +9,18 @@ ElasticPowerPriorities32.prototype.setPriorities = function(priorities) {
 ElasticPowerPriorities32.prototype.setPrioritiesRev = function(priorities) {
     var TSPCommon = require('./TSPCommon'),
         _ = require('underscore');
-    var priorities_grouped = TSPCommon._grouper(priorities, this.model.num_neurons);
-    priorities_grouped = numeric.transpose(priorities_grouped);
-    this.priorities_rev = _.flatten(priorities_grouped, true);
+
+    if (typeof priorities[0] != 'object') {
+        priorities = TSPCommon._grouper(priorities, this.model.num_items);
+    }
+
+    this.priorities_rev_grouped = numeric.transpose(priorities);
+    this.priorities_rev = _.flatten(this.priorities_rev_grouped, true);
+
+    //var priorities_grouped = TSPCommon._grouper(priorities, this.model.num_neurons);
+    //priorities_grouped = numeric.transpose(priorities_grouped);
+    //this.priorities_rev = _.flatten(priorities_grouped, true);
+    //this.priorities_rev_grouped = priorities_grouped;
 };
 
 ElasticPowerPriorities32.prototype.getPriorities = function(diff) {
@@ -27,11 +36,12 @@ ElasticPowerPriorities32.prototype.getPrioritiesRev = function(diff) {
         _ = require('underscore'),
         TSPCommon = require('./TSPCommon');
 
-    var priorities = this.priorities_rev;
+    //var priorities = this.priorities_rev;
     return this.priorities_rev;
-    var dist_2 = _.map(diff, function (value) {
-        return Math.sqrt(Math.pow(value[0], 2) + Math.pow(value[1], 2));
-    });
+
+    //var dist_2 = _.map(diff, function (value) {
+    //    return Math.sqrt(Math.pow(value[0], 2) + Math.pow(value[1], 2));
+    //});
 
     //var dist_2 = _.map(diff, function (value) {
     //    return Math.sqrt(Math.pow(value[0], 2) + Math.pow(value[1], 2));
@@ -70,54 +80,57 @@ ElasticPowerPriorities32.prototype.weightenDistances = function(diff) {
         k = 0.01;
     }
 
-    var weights = numeric.exp(numeric.div(numeric.neg(dist), (10 * Math.pow(k, 2))));
+    var weights = numeric.exp(numeric.div(numeric.neg(dist), (2 * Math.pow(k, 2))));
 
     var grouped_neurons = TSPCommon._grouper(weights, this.model.num_neurons);
-    weights = _.map(grouped_neurons, function (value) {
-        return numeric.div(value, numeric.sum(value));
-    });
+    return grouped_neurons;
+    //weights = _.map(grouped_neurons, function (value) {
+    //    return numeric.div(value, numeric.sum(value));
+    //});
 
     return weights;
 };
 
-ElasticPowerPriorities32.prototype.weightenNeurons = function(diff){
-    var _ = require('underscore'),
-        numeric = require('numeric'),
-        TSPCommon = require('./TSPCommon');
-
-    var dist = this.getPriorities(diff) ? this.getPriorities(diff) : false;
-    var dist_grouped = TSPCommon._grouper(dist, this.model.num_neurons);
-    return dist_grouped;
-
-    var dist = this.getPriorities(diff) ? this.getPriorities(diff) : false;
-
-    var dist_grouped = TSPCommon._grouper(dist, this.model.num_neurons);
-    var k = this.model.k;
-    if (k < 0.01) {
-        k = 0.01;
-    }
-
-    //var weights = numeric.exp(numeric.div(numeric.neg(numeric.pow(dist, 2)), (2 * Math.pow(1 - this.model.k, 2))));
-    var weights = numeric.exp(numeric.div(numeric.neg(numeric.pow(dist, 2)), (10 * Math.pow(k, 2))));
-    var grouped_neurons = TSPCommon._grouper(weights, this.model.num_neurons);
-    weights = _.map(grouped_neurons, function (value) {
-        return numeric.div(value, numeric.sum(value));
-    });
-
-    return weights;
-};
+//ElasticPowerPriorities32.prototype.weightenNeurons = function(diff){
+//    var _ = require('underscore'),
+//        numeric = require('numeric'),
+//        TSPCommon = require('./TSPCommon');
+//
+//    var dist = this.getPriorities(diff) ? this.getPriorities(diff) : false;
+//    var dist_grouped = TSPCommon._grouper(dist, this.model.num_neurons);
+//    return dist_grouped;
+//
+//    var dist = this.getPriorities(diff) ? this.getPriorities(diff) : false;
+//
+//    var dist_grouped = TSPCommon._grouper(dist, this.model.num_neurons);
+//    var k = this.model.k;
+//    if (k < 0.01) {
+//        k = 0.01;
+//    }
+//
+//    //var weights = numeric.exp(numeric.div(numeric.neg(numeric.pow(dist, 2)), (2 * Math.pow(1 - this.model.k, 2))));
+//    var weights = numeric.exp(numeric.div(numeric.neg(numeric.pow(dist, 2)), (10 * Math.pow(k, 2))));
+//    var grouped_neurons = TSPCommon._grouper(weights, this.model.num_neurons);
+//    weights = _.map(grouped_neurons, function (value) {
+//        return numeric.div(value, numeric.sum(value));
+//    });
+//
+//    return weights;
+//};
 
 ElasticPowerPriorities32.prototype.weightenNeuronsRev = function(diff){
     var _ = require('underscore'),
         numeric = require('numeric'),
         TSPCommon = require('./TSPCommon');
 
-    var dist = this.getPrioritiesRev(diff) ? this.getPrioritiesRev(diff) : false;
-    var dist_grouped = TSPCommon._grouper(dist, this.model.num_neurons);
-    return dist_grouped;
+    return this.priorities_rev_grouped;
 
+    //var dist = this.getPrioritiesRev(diff) ? this.getPrioritiesRev(diff) : false;
+    //var dist_grouped = TSPCommon._grouper(dist, this.model.num_neurons);
+    //return dist_grouped;
+    //
     var dist = this.getPrioritiesRev(diff) ? this.getPrioritiesRev(diff) : false;
-    var dist_grouped = TSPCommon._grouper(dist, this.model.num_neurons);
+    //var dist_grouped = TSPCommon._grouper(dist, this.model.num_neurons);
 
     var k = this.model.k;
     if (k < 0.01) {
@@ -125,21 +138,78 @@ ElasticPowerPriorities32.prototype.weightenNeuronsRev = function(diff){
     }
     //var weights = numeric.exp(numeric.div(numeric.neg(numeric.pow(dist, 2)), (2 * Math.pow(this.model.k, 2))));
     //var weights = numeric.exp(numeric.div(numeric.neg(numeric.pow(dist, 2)), (2 * Math.pow((1-this.model.k), 2))));
-    var weights = numeric.exp(numeric.div(numeric.neg(numeric.pow(dist, 2)), (10 * Math.pow(k, 2))));
+    var weights = numeric.exp(numeric.div(numeric.neg(numeric.pow(dist, 2)), (2 * Math.pow(k, 2))));
     var grouped_neurons = TSPCommon._grouper(weights, this.model.num_neurons);
-    //grouped_neurons = numeric.transpose(grouped_neurons);
-    weights = _.map(grouped_neurons, function (value) {
-        return numeric.div(value, numeric.sum(value));
-    });
-    return weights;
 
-    var weights_2 = _.map(weights, function(group){
-        return numeric.div(group, _.max(group));
-    });
+    return grouped_neurons;
 
-    return weights_2;
+    //weights = _.map(grouped_neurons, function (value) {
+    //    return numeric.div(value, numeric.sum(value));
+    //});
+    //return weights;
+    //
+    //var weights_2 = _.map(weights, function(group){
+    //    return numeric.div(group, _.max(group));
+    //});
+    //
+    //return weights_2;
 };
 
+/**
+ * Performs weights postprocessing.
+ *
+ * @param weights
+ * @param weights_dist
+ * @returns {*}
+ */
+ElasticPowerPriorities32.prototype.postprocessWeights = function(weights, weights_dist) {
+    var numeric = require('numeric'),
+        _ = require('underscore');
+
+    weights_dist = numeric.transpose(weights_dist);
+    weights_dist = _.map(weights_dist, function(value){
+        var sum = numeric.sum(value);
+        value = _.map(value, function(weight){
+            return weight /= sum;
+        });
+        return value;
+    });
+    weights_dist = numeric.transpose(weights_dist);
+    weights = numeric.mul(weights, weights_dist);
+
+    //weights = numeric.transpose(numeric.mul(weights, weights_dist));
+    //weights = _.map(weights, function(value){
+    //    var sum = numeric.sum(value);
+    //    value = _.map(value, function(weight){
+    //        return weight /= sum;
+    //    });
+    //    return value;
+    //});
+    //weights = numeric.transpose(weights);
+    //return weights;
+
+    //weights_dist = numeric.transpose(weights_dist);
+    //weights_dist = _.map(weights_dist, function(value){
+    //    var sum = numeric.sum(value);
+    //    value = _.map(value, function(weight){
+    //        return weight /= sum;
+    //    });
+    //    return value;
+    //});
+    //weights_dist = numeric.transpose(weights_dist);
+    //
+    //weights = numeric.mul(weights, weights_dist);
+    //
+    return weights;
+};
+
+/**
+ * Calculates delta.
+ *
+ * @param diff
+ * @param multiplicator
+ * @returns {Array}
+ */
 ElasticPowerPriorities32.prototype.getNeuronsDelta = function(diff, multiplicator) {
     var numeric = require('numeric'),
         _ = require('underscore'),
@@ -149,16 +219,28 @@ ElasticPowerPriorities32.prototype.getNeuronsDelta = function(diff, multiplicato
     //var weights_rev = this.weightenNeuronsRev(diff);
     var weights_dist = numeric.transpose(this.weightenDistances(diff));
 
-    weights = numeric.mul(weights, weights_dist);
-    weights = numeric.transpose(weights);
-    weights = _.map(weights, function(value){
-        var sum = numeric.sum(value);
-        value = _.map(value, function(weight){
-            return weight /= sum;
-        });
-        return value;
-    });
-    weights = numeric.transpose(weights);    //var weights_dist = numeric.transpose(this.weightenDistances(diff));
+    //weights = numeric.mul(weights, weights_dist);
+
+    //var pairs = this.model.findPairs();
+    //if (true || pairs.result.length == this.model.num_items) {
+    //    weights = numeric.mul(weights, this.model.weightenBetterAlternatives());
+    //}
+
+    //weights_dist = numeric.transpose(weights_dist);
+    //weights_dist = _.map(weights_dist, function(value){
+    //    var sum = numeric.sum(value);
+    //    value = _.map(value, function(weight){
+    //        return weight /= sum;
+    //    });
+    //    return value;
+    //});
+    //weights_dist = numeric.transpose(weights_dist);
+    //
+    //weights = numeric.mul(weights, weights_dist);
+
+    weights = this.postprocessWeights(weights, weights_dist);
+
+    //weights = numeric.mul(weights, weights_dist);
 
     var diff_grouped = TSPCommon._grouper(diff, diff.length / this.model.coordinates.length),
         diff_grouped_transposed = numeric.transpose(diff_grouped),

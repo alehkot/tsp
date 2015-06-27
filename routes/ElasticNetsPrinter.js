@@ -8,7 +8,7 @@ function ElasticNetsPrinter(k, coordinates, norm_coordinates_data) {
     Canvas = require('canvas');
     Image = Canvas.Image;
     ///canvas = new Canvas(600, 300, 'pdf');
-    canvas = new Canvas(500, 500, 'pdf');
+    canvas = new Canvas(1000, 1000, 'pdf');
     ctx = canvas.getContext('2d');
     this.canvas = canvas;
     this._ = require('underscore');
