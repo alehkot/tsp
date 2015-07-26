@@ -1,0 +1,6 @@
+.tsp-solver-results .tsp-solver-results-item .label {
+  margin-right: 10px; }
+
+.tsp-plot-container svg,
+.tsp-plot-container canvas {
+  background-color: #D3D3D3; }

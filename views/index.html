@@ -1,0 +1,18 @@
+<html lang="en" ng-app="tsp">
+<head>
+  <meta charset="UTF-8">
+  <title>TSP Application</title>
+  <script src="lib/angular/angular.js" type="text/javascript"></script>
+  <script src="lib/underscore/underscore.js" type="text/javascript"></script>
+  <script src="js/script.js" type="text/javascript"></script>
+  <script src="lib/d3/d3.v3.min.js" charset="utf-8"></script>
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body ng-controller="TSPController as TSPCtrl">
+  <tsp-generator></tsp-generator>
+  <tsp-plot></tsp-plot>
+  <tsp-parser></tsp-parser>
+  <tsp-solver></tsp-solver>
+  <tsp-model-view></tsp-model-view>
+</body>
+</html>

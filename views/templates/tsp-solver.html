@@ -1,0 +1,81 @@
+<div class="tsp-solver" ng-controller="TSPSolverController as tspSolverCtrl">
+    <form name="tspSolverForm" ng-submit="tspSolverForm.$valid && tspSolverCtrl.execute()" novalidate="novalidate">
+        <div>
+            <label>Choose method:
+                <select ng-change="tspSolverCtrl.changeMethod()" ng-model="tspSolverCtrl.method"
+                        ng-options="method.name for method in tspSolverCtrl.methods"></select>
+            </label>
+        </div>
+        <div ng-show="tspSolverCtrl.isMonteCarlo()">
+            <h3>Monte-Carlo</h3>
+            <label>Number of iterations:
+                <input type="number" min="1" max="1000000"
+                       ng-model="tspSolverCtrl.monte_carlo_params.num_iterations"/>
+            </label>
+        </div>
+        <div ng-show="tspSolverCtrl.isConcorde()">
+            <h3>Concorde</h3>
+            <label>Name:
+                <input type="text" name="concorde_name" ng-model="tspSolverCtrl.concorde_params.name"/>
+            </label>
+            <label>Description:
+                <input type="text" name="concorde_description" ng-model="tspSolverCtrl.concorde_params.description"/>
+            </label>
+        </div>
+        <div ng-show="tspSolverCtrl.isElasticNetsMarriage()">
+            <h3>Elastic Nets Marriage</h3>
+        </div>
+        <div ng-show="tspSolverCtrl.isElasticNets()">
+            <h3>Elastic Nets</h3>
+            <label for="">Alpha:
+                <input name="x" step="0.01" ng-model="tspSolverCtrl.elastic_nets_params.alpha" type="number"/>
+            </label>
+            <label for="">Beta:
+                <input name="x" step="0.01" ng-model="tspSolverCtrl.elastic_nets_params.beta" type="number"/>
+            </label>
+            <label for="">Num neurons factor:
+                <input name="x" step="0.01" ng-model="tspSolverCtrl.elastic_nets_params.num_neurons_factor"
+                       type="number"/>
+            </label>
+            <label for="">K:
+                <input name="x" step="0.01" ng-model="tspSolverCtrl.elastic_nets_params.k" type="number"/>
+            </label>
+            <label for="">Epsilon:
+                <input name="x" step="0.01" ng-model="tspSolverCtrl.elastic_nets_params.epsilon" type="number"/>
+            </label>
+            <label for="">K num iter:
+                <input name="x" step="0.01" ng-model="tspSolverCtrl.elastic_nets_params.k_num_iter" type="number"/>
+            </label>
+            <label for="">K alpha:
+                <input name="x" step="0.01" ng-model="tspSolverCtrl.elastic_nets_params.k_alpha" type="number"/>
+            </label>
+            <label for="">Radius:
+                <input name="x" step="0.01" ng-model="tspSolverCtrl.elastic_nets_params.radius" type="number"/>
+            </label>
+            <label for="">Num iter max:
+                <input name="x" step="1" ng-model="tspSolverCtrl.elastic_nets_params.num_iter_max" type="number"/>
+            </label>
+            <label for="">Reoptimize:
+                <input name="reoptimize" ng-model="tspSolverCtrl.elastic_nets_params.reoptimize" type="checkbox"/>
+            </label>
+        </div>
+        <div>
+            <input type="button" ng-click="tspSolverCtrl.calculate()" value="Calculate"
+                   ng-disabled="!tspSolverCtrl.tsp_model.matrix[0]"/>
+            <input type="button" ng-click="tspSolverCtrl.reoptimize()" value="Reoptimize"
+                   ng-disabled="!tspSolverCtrl.tsp_model.matrix[0]"/>
+        </div>
+    </form>
+    <div class="tsp-solver-results" ng-show="tspSolverCtrl.result.min != null">
+        <h3>Results:</h3>
+
+        <div class="tsp-solver-results-item"><span class="label">Minimum:</span>{{tspSolverCtrl.result.min}}</div>
+        <div class="tsp-solver-results-item"><span class="label">Maximum:</span>{{tspSolverCtrl.result.max}}</div>
+        <div class="tsp-solver-results-item"><span class="label">The cheapest route:</span>{{tspSolverCtrl.result.min_route}}
+        </div>
+        <div class="tsp-solver-results-item"><span class="label">The most expensive route:</span>{{tspSolverCtrl.result.max_route}}
+            <div class="tsp-solver-results-item"><span class="label">Lower bound:</span>{{tspSolverCtrl.result.lower_bound}}
+            </div>
+        </div>
+    </div>
+</div>
