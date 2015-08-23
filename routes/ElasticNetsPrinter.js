@@ -7,8 +7,8 @@ function ElasticNetsPrinter(k, coordinates, norm_coordinates_data) {
     var Canvas, Image, canvas, ctx, _;
     Canvas = require('canvas');
     Image = Canvas.Image;
-    ///canvas = new Canvas(600, 300, 'pdf');
-    canvas = new Canvas(1000, 1000, 'pdf');
+    canvas = new Canvas(600, 300, 'pdf');
+    //canvas = new Canvas(1000, 1000, 'pdf');
     ctx = canvas.getContext('2d');
     this.canvas = canvas;
     this._ = require('underscore');
@@ -72,7 +72,7 @@ ElasticNetsPrinter.prototype.addPage = function(neurons, k, iteration) {
         ctx.lineWidth = 2;
         ctx.strokeStyle = 'red';
         ctx.stroke();
-        ctx.fillText(i + 1, neuron[0] * that.norm_coordinates_width_interval + that.norm_coordinates_data['min_width'], neuron[1] * that.norm_coordinates_height_interval + that.norm_coordinates_data['min_height']);
+        //ctx.fillText(i + 1, neuron[0] * that.norm_coordinates_width_interval + that.norm_coordinates_data['min_width'], neuron[1] * that.norm_coordinates_height_interval + that.norm_coordinates_data['min_height']);
     });
     ctx.addPage();
 };

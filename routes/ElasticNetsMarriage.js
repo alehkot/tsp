@@ -48,6 +48,7 @@ function ElasticNetsMarriage() {
         num_items: 6
     };
 
+    this.reoptimize_count = 1;
     this.k_alpha = this.method_params.k_alpha;
     this.num_items = this.method_params.num_items;
     this.num_max_relaxations = this.method_params.num_max_relaxations;
@@ -145,6 +146,36 @@ ElasticNetsMarriage.prototype.calculate = function() {
         console.log(this.checkResult(result));
     } else {
         console.log('Can\'t match pairs');
+    }
+
+
+
+    while(this.reoptimize_count-- > 0) {
+        console.log('==== REOPTIMIZATION ====');
+        this.resetAlgorithm();
+
+        var a, b;
+        while (true) {
+            a = _.random(0, this.num_items - 1);
+            b = _.random(0, this.num_items - 1);
+            if (a != b) {
+                break;
+            }
+        }
+
+        console.log('SWAPPING:', a, b);
+
+        var tmp = this.priority1[a];
+        this.priority1[a] = this.priority1[b];
+        this.priority1[b] = tmp;
+
+        this.power1.priorities_grouped[0][a] = this.power1.priorities_grouped[0][b];
+        this.power1.priorities_grouped[0][b] = tmp;
+
+        this.priority1_grouped = TSPCommon._grouper(this.priority1, this.num_items);
+        this.orig_priority1_grouped = TSPCommon._clone_array(this.priority1_grouped);
+        this.initReversePriorities();
+        this.calculate();
     }
 
 };
